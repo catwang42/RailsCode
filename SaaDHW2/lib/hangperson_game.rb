@@ -7,7 +7,6 @@ class HangpersonGame
 
   # def initialize()
   # end
-  
   attr_reader :word, :guesses, :wrong_guesses
   
   @@get_random_word = ''
@@ -25,31 +24,48 @@ class HangpersonGame
     Net::HTTP.post_form(uri ,{}).body
   end
   
-  #guess 
+  #guess function , change wrong_guesses and guesses according to user's guess
   def guess(guess_word)
-       raise ArgumentError, 'Argument is not a string' unless guess_word.is_a?String
+       #@guess_word = guess_word
+       raise ArgumentError, 'Argument is not a string' unless !guess_word.nil?
        raise ArgumentError, 'Argument is empty' unless !guess_word.empty?
-       raise ArgumentError, 'Argument '
+       raise ArgumentError, 'Argument is not a letter' unless guess_word[/[a-zA-Z]+/] == guess_word
+       
        
        if @guesses != guess_word && @wrong_guesses !=guess_word && guess_word != guess_word.upcase
           if @word.include? guess_word
-              @guesses = guess_word
+              @guesses << guess_word
           else
-            @wrong_guesses = guess_word
+            @wrong_guesses << guess_word
           end
        else
          return false
        end
-  #end of guess method
   end
   
-   #begin
-    #guess('')
-    #guess_word =~ /\A\d+\Z/
-   #rescue ArgumentError
-     #puts 'invalid argument'
-   #end
-
+  #substitutes the correct guesses made so far into the word
+  def word_with_guesses
+    @display = ''
+    @word.each_char do |c|
+        if @guesses.include?c 
+          @display << c 
+        else
+          @display << '-'
+        end
+    end
+    return @display
+  end
+  
+  #return the gaming state 
+  def check_win_or_lose
+    if @wrong_guesses.length >= 7
+      return :lose
+    elsif  @word == word_with_guesses
+      return :win
+    else
+      return :play
+    end
+  end
+ 
 #
-
 end
