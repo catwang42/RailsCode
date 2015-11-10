@@ -66,6 +66,8 @@ class HangpersonGame
       return :play
     end
   end
+
  
+
 #
 end
